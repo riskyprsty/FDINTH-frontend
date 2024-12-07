@@ -97,13 +97,13 @@ const Users = () => {
   };
 
   return (
-    <div className="w-full p-0 m-0">
-      <div className="w-full flex flex-col items-stretch gap-3">
-        <div className="w-full flex justify-between mb-5">
-          <div className="flex gap-1 justify-start flex-col items-start">
-            <h2 className="font-bold text-2xl xl:text-4xl mt-0 pt-0 text-base-content dark:text-neutral-200">
-              Users
-            </h2>
+<div className="w-full p-0 m-0">
+  <div className="w-full max-w-screen-2xl mx-auto flex flex-col items-stretch gap-3">
+    <div className="w-full flex justify-between items-center mb-5">
+      <div className="flex gap-1 justify-start flex-col items-start">
+        <h2 className="font-bold text-2xl xl:text-4xl mt-0 pt-0 text-base-content dark:text-neutral-200">
+          Users
+        </h2>
             {data && data.length > 0 && (
               <span className="text-neutral dark:text-neutral-content font-medium text-base">
                 {data.length} Users Found
@@ -130,7 +130,7 @@ const Users = () => {
           <DataTable
             slug="users"
             columns={columns}
-            rows={transformedData} // Pass transformed data
+            rows={transformedData} 
             includeActionColumn={true}
           />
         ) : (

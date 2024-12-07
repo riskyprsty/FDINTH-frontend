@@ -162,6 +162,15 @@ export const fetchUsers = async () => {
   return response;
 };
 
+// export const fetchPosts = async () => {
+//   const response = await axios.get('http://localhost:5000/api/posts').then((res) =>  {
+//     console.log('axios get:', res.data);
+//     return response.data.data;
+//   }).catch((err) => {
+//     console.log(err);
+//     throw err;
+//   })
+// }
 // GET SINGLE USER
 export const fetchSingleUser = async (id: string) => {
   const response = await axios
@@ -229,10 +238,10 @@ export const fetchOrders = async () => {
 // GET ALL POSTS
 export const fetchPosts = async () => {
   const response = await axios
-    .get('https://react-admin-ui-v1-api.vercel.app/posts')
+    .get('http://localhost:5000/api/posts')
     .then((res) => {
       console.log('axios get:', res.data);
-      return res.data;
+      return res.data.data;
     })
     .catch((err) => {
       console.log(err);
