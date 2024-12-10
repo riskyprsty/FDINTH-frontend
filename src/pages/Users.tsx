@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { GridColDef } from '@mui/x-data-grid';
 import DataTable from '../components/DataTable';
 import { fetchUsers } from '../api/ApiCollection';
@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import AddData from '../components/AddData';
 
 interface User {
-  user_id: string; // or number, based on your API
+  user_id: string; 
   username: string;
   img?: string;
   token: string;
@@ -16,9 +16,9 @@ interface User {
   profile_pict?: string;
 }
 
-
 const Users = () => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const { isLoading, isError, isSuccess, data, refetch } = useQuery<User[]>({
     queryKey: ['allusers'],
     queryFn: fetchUsers,
@@ -96,28 +96,57 @@ const Users = () => {
     refetch(); // Refetch the user data
   };
 
+  const handleSelectedUsersChange = (users: User[]) => {
+    setSelectedUsers(users);
+  };
+
+  const handleAddFetcher = () => {
+    console.log('Selected Users:', selectedUsers);
+
+    if (selectedUsers.length > 0) {
+
+      for (const selectedUser of selectedUsers) {
+        console.log(selectedUser.user_id);
+      }
+
+      toast.success(`Menambahkan ${selectedUsers.length} user sebagai fetcher`);
+    } else {
+      toast.error('Pilih setidaknya satu user');
+    }
+  };
+
   return (
-<div className="w-full p-0 m-0">
-  <div className="w-full max-w-screen-2xl mx-auto flex flex-col items-stretch gap-3">
-    <div className="w-full flex justify-between items-center mb-5">
-      <div className="flex gap-1 justify-start flex-col items-start">
-        <h2 className="font-bold text-2xl xl:text-4xl mt-0 pt-0 text-base-content dark:text-neutral-200">
-          Users
-        </h2>
+    <div className="w-full p-0 m-0">
+      <div className="w-full max-w-screen-2xl mx-auto flex flex-col items-stretch gap-3">
+        <div className="w-full flex justify-between items-center mb-5">
+          <div className="flex gap-1 justify-start flex-col items-start">
+            <h2 className="font-bold text-2xl xl:text-4xl mt-0 pt-0 text-base-content dark:text-neutral-200">
+              Users
+            </h2>
             {data && data.length > 0 && (
               <span className="text-neutral dark:text-neutral-content font-medium text-base">
                 {data.length} Users Found
               </span>
             )}
           </div>
-          <button
-            onClick={() => setIsOpen(true)}
-            className={`btn ${
-              isLoading ? 'btn-disabled' : 'btn-primary'
-            }`}
-          >
-            Add New User +
-          </button>
+          <div className="flex items-center gap-3">
+            {selectedUsers.length > 0 && (
+              <button 
+                onClick={handleAddFetcher}
+                className="btn btn-primary"
+              >
+                Add {selectedUsers.length} Users as Fetcher
+              </button>
+            )}
+            <button
+              onClick={() => setIsOpen(true)}
+              className={`btn ${
+                isLoading ? 'btn-disabled' : 'btn-primary'
+              }`}
+            >
+              Add New User +
+            </button>
+          </div>
         </div>
         {isLoading ? (
           <DataTable
@@ -125,6 +154,7 @@ const Users = () => {
             columns={columns}
             rows={[]}
             includeActionColumn={true}
+            onSelectedUsersChange={handleSelectedUsersChange}
           />
         ) : isSuccess ? (
           <DataTable
@@ -132,6 +162,7 @@ const Users = () => {
             columns={columns}
             rows={transformedData} 
             includeActionColumn={true}
+            onSelectedUsersChange={handleSelectedUsersChange}
           />
         ) : (
           <>
@@ -140,6 +171,7 @@ const Users = () => {
               columns={columns}
               rows={[]}
               includeActionColumn={true}
+              onSelectedUsersChange={handleSelectedUsersChange}
             />
             <div className="w-full flex justify-center">
               Error while getting the data!

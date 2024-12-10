@@ -220,7 +220,7 @@ const AddData: React.FC<AddDataProps> = ({
                 <span className="label-text">or by Classic Login Method</span>
               </div>
               <input
-                type="email"
+                type="text"
                 placeholder="Email"
                 className="input input-bordered w-full"
                 name="email"

@@ -114,17 +114,17 @@ const Posts = () => {
     {
       field: "actorName",
       headerName: "Author",
-      minWidth: 100,
+      minWidth: 150,
       flex: 1,
       renderCell: (params) => {
-          return (
-            <div className="flex gap-1 items-center">
-              <HiOutlineGlobeAmericas className="text-lg" />
-              <span className="p-0 mt-[1px] leading-none">
-                {params.row.actorName}
-              </span>
-            </div>
-          );
+        return (
+          <div className="flex gap-1 items-center">
+            <HiOutlineGlobeAmericas className="text-lg" />
+            <span className="p-0 mt-[1px] leading-none">
+              {params.row.actorName}
+            </span>
+          </div>
+        );
       },
     },
     {
@@ -210,7 +210,7 @@ const Posts = () => {
           <DataTable
             slug="orders"
             columns={columns}
-            rows={data}
+            rows={data.map((post) => ({ ...post, id: post.externalId }))}
             includeActionColumn={false}
           />
         ) : (
