@@ -219,6 +219,14 @@ export const fetchSingleProduct = async (id: string) => {
   return response;
 };
 
+export const addSelectedUsers = async (userIds: string[], taskTypes: string[]) => {
+  const response = await axios.post(`http://localhost:5000/api/selecteduser/add`, {
+    userIds,
+    taskTypes
+  });
+  return response.data;
+};
+
 // GET ALL ORDERS
 export const fetchOrders = async () => {
   const response = await axios

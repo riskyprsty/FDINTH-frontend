@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { GridColDef } from '@mui/x-data-grid';
 import DataTable from '../components/DataTable';
-import { fetchUsers } from '../api/ApiCollection';
+import { fetchUsers, addSelectedUsers } from '../api/ApiCollection';
 import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import AddData from '../components/AddData';
+import AssignTaskModal from '../components/AssignTaskModal';
 
-interface User {
+
+export interface User {
   user_id: string; 
   username: string;
   img?: string;
@@ -16,10 +18,30 @@ interface User {
   profile_pict?: string;
 }
 
+export interface TaskType {
+  value: 'FETCH' | 'COMMENT' | 'LIKE';
+  label: string;
+  color: string;
+}
+
+const taskTypes: TaskType[] = [
+  { value: 'FETCH', label: 'Fetcher', color: 'secondary' },
+  { value: 'COMMENT', label: 'Commenter', color: 'accent' },
+  { value: 'LIKE', label: 'Liker', color: 'info' }
+];
+
 const Users = () => {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
-  const { isLoading, isError, isSuccess, data, refetch } = useQuery<User[]>({
+
+  const { 
+    isLoading, 
+    isError, 
+    isSuccess, 
+    data, 
+    refetch 
+  } = useQuery<User[]>({
     queryKey: ['allusers'],
     queryFn: fetchUsers,
   });
@@ -86,32 +108,34 @@ const Users = () => {
     }
   }, [isError, isLoading, isSuccess]);
 
-  // Transform the data to add an id field
   const transformedData = data?.map((row) => ({
     ...row,
-    id: row.user_id, // Map user_id to id
+    id: row.user_id,
   })) || [];
 
   const reloadUsersList = () => {
-    refetch(); // Refetch the user data
+    refetch();
   };
 
   const handleSelectedUsersChange = (users: User[]) => {
     setSelectedUsers(users);
   };
 
-  const handleAddFetcher = () => {
-    console.log('Selected Users:', selectedUsers);
-
-    if (selectedUsers.length > 0) {
-
-      for (const selectedUser of selectedUsers) {
-        console.log(selectedUser.user_id);
-      }
-
-      toast.success(`Menambahkan ${selectedUsers.length} user sebagai fetcher`);
-    } else {
+  const handleAssignTasks = async (selectedTaskTypes: string[]) => {
+    if (selectedUsers.length === 0) {
       toast.error('Pilih setidaknya satu user');
+      return;
+    }
+
+    try {
+      const userIds = selectedUsers.map((user) => user.user_id);
+      await addSelectedUsers(userIds, selectedTaskTypes);
+      
+      toast.success(`Berhasil menambahkan ${selectedUsers.length} user dengan task types: ${selectedTaskTypes.join(', ')}`);
+      setIsAssignModalOpen(false);
+    } catch (error) {
+      console.error('Error adding selected users:', error);
+      toast.error('Gagal menambahkan user');
     }
   };
 
@@ -132,10 +156,10 @@ const Users = () => {
           <div className="flex items-center gap-3">
             {selectedUsers.length > 0 && (
               <button 
-                onClick={handleAddFetcher}
+                onClick={() => setIsAssignModalOpen(true)}
                 className="btn btn-primary"
               >
-                Add {selectedUsers.length} Users as Fetcher
+                Assign Tasks to {selectedUsers.length} Users
               </button>
             )}
             <button
@@ -148,6 +172,7 @@ const Users = () => {
             </button>
           </div>
         </div>
+
         {isLoading ? (
           <DataTable
             slug="users"
@@ -187,6 +212,14 @@ const Users = () => {
             reloadUsersList={reloadUsersList}
           />
         )}
+
+        <AssignTaskModal 
+          isOpen={isAssignModalOpen}
+          onClose={() => setIsAssignModalOpen(false)}
+          onSubmit={handleAssignTasks}
+          selectedUsers={selectedUsers}
+          taskTypes={taskTypes}
+        />
       </div>
     </div>
   );

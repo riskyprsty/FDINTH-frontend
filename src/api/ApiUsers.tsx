@@ -2,13 +2,12 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', // Set your base URL here
+  baseURL: 'http://localhost:5000/api', 
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Function for adding by token or cookies
 export const addUser = async (data: { token?: string; cookies?: string }) => {
   try {
     const response = await api.post('/users/add', data);
@@ -18,7 +17,6 @@ export const addUser = async (data: { token?: string; cookies?: string }) => {
   }
 };
 
-// Function for logging in with email and password
 export const loginUser = async (data: { email: string; password: string }) => {
   try {
     const response = await api.post('/users/login', data);
@@ -27,3 +25,5 @@ export const loginUser = async (data: { email: string; password: string }) => {
     throw new Error('Error logging in');
   }
 };
+
+
