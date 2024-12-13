@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FormEvent } from "react";
 import toast from "react-hot-toast";
 import { HiOutlineXMark } from "react-icons/hi2";
-import { addUser, loginUser } from "../api/ApiUsers";
+import { addUser, loginUser, addCommentTemplate } from "../api/ApiUsers";
 
 interface AddDataProps {
   slug: string;
@@ -15,7 +15,7 @@ const AddData: React.FC<AddDataProps> = ({
   isOpen,
   //   columns,
   setIsOpen,
-  reloadUsersList,
+  reloadUsersList
 }) => {
   // global
   const [showModal, setShowModal] = React.useState(false);
@@ -40,6 +40,11 @@ const AddData: React.FC<AddDataProps> = ({
   const [price, setPrice] = React.useState("");
   const [inStock, setInStock] = React.useState("");
   const [formProductIsEmpty, setFormProductIsEmpty] = React.useState(true);
+  
+  // add template
+  const [content, setContent] = React.useState("");
+  const [attachmentUrl, setAttachmentUrl] = React.useState("");
+  const [formTemplateIsEmpty, setFormTemplateIsEmpty] = React.useState(true);
 
   // global
   const loadImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -51,6 +56,12 @@ const AddData: React.FC<AddDataProps> = ({
   };
 
   const successAddUserAction = () => {
+    setShowModal(false);
+    setIsOpen(false);
+    reloadUsersList();
+  };
+
+  const successAddTemplateAction = () => {
     setShowModal(false);
     setIsOpen(false);
     reloadUsersList();
@@ -116,6 +127,34 @@ const AddData: React.FC<AddDataProps> = ({
     }
   };
 
+  const handleSubmitComment = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      if (content) {
+        try {
+          const response = await addCommentTemplate({
+            content,
+            attachment_url: attachmentUrl,
+          });
+          if (response.success) {
+            toast.success('Comment template added successfully!');
+            successAddTemplateAction();
+          } else {
+            toast.error("Failed to add new template comment");
+          }
+        } catch (error) {
+          toast.error("Error adding new template");
+        }
+      }
+    } catch (err) {
+      toast.error("Error when adding new template");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   React.useEffect(() => {
     setShowModal(isOpen);
   }, [isOpen]);
@@ -139,6 +178,20 @@ const AddData: React.FC<AddDataProps> = ({
       setFormUserIsEmpty(false);
     }
   }, [email, accessToken, cookies, password]);
+
+  React.useEffect(() => {
+    if (
+      content === "" 
+    ) {
+      setFormTemplateIsEmpty(true);
+    }
+
+    if (
+      content !== ""
+    ) {
+      setFormTemplateIsEmpty(false);
+    }
+  }, [content, attachmentUrl]);
 
   React.useEffect(() => {
     if (
@@ -409,6 +462,86 @@ const AddData: React.FC<AddDataProps> = ({
               } btn-block col-span-full font-semibold`}
             >
               Submit
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  if (slug === "template") {
+    return (
+      <div className="w-screen h-screen fixed top-0 left-0 flex justify-center items-center bg-black/75 z-[99]">
+        <div
+          className={`w-[80%] xl:w-[50%] rounded-lg p-7 bg-base-100 relative transition duration-300 flex flex-col items-stretch gap-5 ${
+            showModal ? "translate-y-0" : "translate-y-full"
+          }
+            ${showModal ? "opacity-100" : "opacity-0"}`}
+        >
+          <div className="w-full flex justify-between pb-5 border-b border-base-content border-opacity-30">
+            <button
+              onClick={() => {
+                setShowModal(false);
+                setIsOpen(false);
+              }}
+              className="absolute top-5 right-3 btn btn-ghost btn-circle"
+            >
+              <HiOutlineXMark className="text-xl font-bold" />
+            </button>
+            <span className="text-2xl font-bold">Add new {slug}</span>
+          </div>
+          <form
+            onSubmit={handleSubmitComment}
+            className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4"
+          >
+            <input
+              type="text"
+              placeholder="Comment Content"
+              className="input input-bordered w-full"
+              name="content"
+              id="content"
+              onChange={(element) => setContent(element.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Attachment URL"
+              className="input input-bordered w-full"
+              name="attachment_url"
+              id="attachment_url"
+              onChange={(element) => setAttachmentUrl(element.target.value)}
+            />
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text">Or pick from file</span>
+              </div>
+              <input
+                type="file"
+                className="file-input file-input-bordered w-full"
+                onChange={loadImage}
+              />
+            </label>
+            {preview && preview !== "" && (
+              <div className="w-full flex flex-col items-start gap-3">
+                <span>Attachment Preview</span>
+                <div className="avatar">
+                  <div className="w-24 rounded-full">
+                    <img src={preview} alt="profile-upload" />
+                  </div>
+                </div>
+              </div>
+            )}
+            <button
+              type="submit"
+              className={`mt-5 btn ${
+                formTemplateIsEmpty || loading ? "btn-disabled" : "btn-primary"
+              } btn-block col-span-full font-semibold`}
+              disabled={loading} 
+            >
+              {loading ? (
+                <span className="loading loading-spinner loading-md"></span> // Add spinner icon when loading
+              ) : (
+                "Submit" 
+              )}
             </button>
           </form>
         </div>

@@ -24,7 +24,7 @@ interface Post {
 const Posts = () => {
   // const [isOpen, setIsOpen] = React.useState(false);
   const { isLoading, isError, isSuccess, data } = useQuery<Post[]>({
-    queryKey: ["allorders"],
+    queryKey: ["allposts"],
     queryFn: fetchPosts,
   });
 

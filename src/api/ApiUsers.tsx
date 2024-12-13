@@ -26,4 +26,12 @@ export const loginUser = async (data: { email: string; password: string }) => {
   }
 };
 
+export const addCommentTemplate = async (data: {content: string; attachment_url?: string}) => {
+  try {
+    const response = await api.post('/template/add', data);
+    return response.data;
+  } catch (error) {
+    throw new Error('Error adding template comment');
+  }
+}
 

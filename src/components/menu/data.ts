@@ -43,9 +43,9 @@ export const menu = [
       },
       {
         isLink: true,
-        url: '/products',
+        url: '/templates',
         icon: HiOutlineCube,
-        label: 'products',
+        label: 'templates',
       },
       {
         isLink: true,

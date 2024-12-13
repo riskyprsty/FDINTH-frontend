@@ -162,6 +162,18 @@ export const fetchUsers = async () => {
   return response;
 };
 
+export const fetchCommentTemplate = async () => {
+  const response = await axios.get('http://localhost:5000/api/template/').then((res) => {
+    console.log('axios get:', res.data);
+    return res.data.data;
+  }).catch((err) => {
+    console.log(err);
+    throw err;
+  });
+
+  return response;
+}
+
 // export const fetchPosts = async () => {
 //   const response = await axios.get('http://localhost:5000/api/posts').then((res) =>  {
 //     console.log('axios get:', res.data);

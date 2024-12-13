@@ -1,83 +1,49 @@
 import React from 'react';
 import { GridColDef } from '@mui/x-data-grid';
 import DataTable from '../components/DataTable';
-import { fetchProducts } from '../api/ApiCollection';
 import { useQuery } from '@tanstack/react-query';
+import { fetchCommentTemplate } from '../api/ApiCollection';
 import toast from 'react-hot-toast';
 import AddData from '../components/AddData';
 
-const Products = () => {
+const Templates = () => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const { isLoading, isError, isSuccess, data } = useQuery({
+  const { isLoading, isError, isSuccess, data, refetch } = useQuery({
     queryKey: ['allproducts'],
-    queryFn: fetchProducts,
+    queryFn: fetchCommentTemplate,
   });
 
+   const reloadUsersList = () => {
+    refetch();
+  };
+
+
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
-    {
-      field: 'img',
-      headerName: 'Product',
-      minWidth: 300,
-      flex: 1,
-      renderCell: (params) => {
-        return (
-          <div className="flex gap-3 items-center">
-            <div className="w-6 xl:w-10 overflow-hidden flex justify-center items-center">
-              <img
-                src={params.row.img || '/corrugated-box.jpg'}
-                alt="product-picture"
-                className="object-cover"
-              />
-            </div>
-            <span className="mb-0 pb-0 leading-none">
-              {params.row.title}
-            </span>
-          </div>
-        );
-      },
-    },
-    // {
-    //   field: 'title',
-    //   type: 'string',
-    //   headerName: 'Title',
-    //   width: 250,
-    // },
-    {
-      field: 'color',
-      type: 'string',
-      headerName: 'Color',
-      minWidth: 100,
-      flex: 1,
-    },
-    {
-      field: 'price',
-      type: 'string',
-      headerName: 'Price',
-      minWidth: 100,
-      flex: 1,
-    },
-    {
-      field: 'producer',
-      headerName: 'Producer',
-      type: 'string',
-      minWidth: 100,
-      flex: 1,
-    },
-    {
-      field: 'createdAt',
-      headerName: 'Created At',
-      minWidth: 100,
-      type: 'string',
-      flex: 1,
-    },
-    {
-      field: 'inStock',
-      headerName: 'In Stock',
-      minWidth: 80,
-      type: 'boolean',
-      flex: 1,
-    },
+{
+  field: 'attachment_url',
+  headerName: 'Image',
+  width: 150, // Tetapkan lebar spesifik
+  renderCell: (params) => {
+    return (
+      <div className="flex items-center space-x-3 p-2">
+        <div className="w-24 h-24 overflow-hidden flex justify-center items-center border rounded-lg">
+          <img
+            src={params.row.attachment_url || '/attachmenttemplate.png'}
+            alt="product-picture"
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+    );
+  },
+},
+{
+  field: 'content',
+  type: 'string',
+  headerName: 'Content',
+  flex: 1, 
+  minWidth: 250,
+}
   ];
 
   React.useEffect(() => {
@@ -102,11 +68,11 @@ const Products = () => {
         <div className="w-full flex justify-between xl:mb-5">
           <div className="flex gap-1 justify-start flex-col items-start">
             <h2 className="font-bold text-2xl xl:text-4xl mt-0 pt-0 text-base-content dark:text-neutral-200">
-              Products
+              Comment Templates 
             </h2>
             {data && data.length > 0 && (
               <span className="text-neutral dark:text-neutral-content font-medium text-base">
-                {data.length} Products Found
+                {data.length} Templates Found
               </span>
             )}
           </div>
@@ -116,20 +82,20 @@ const Products = () => {
               isLoading ? 'btn-disabled' : 'btn-primary'
             }`}
           >
-            Add New Product +
+            Add New Template +
           </button>
         </div>
 
         {isLoading ? (
           <DataTable
-            slug="products"
+            slug="templates"
             columns={columns}
             rows={[]}
             includeActionColumn={true}
           />
         ) : isSuccess ? (
           <DataTable
-            slug="products"
+            slug="templates"
             columns={columns}
             rows={data}
             includeActionColumn={true}
@@ -137,7 +103,7 @@ const Products = () => {
         ) : (
           <>
             <DataTable
-              slug="products"
+              slug="templates"
               columns={columns}
               rows={[]}
               includeActionColumn={true}
@@ -150,9 +116,10 @@ const Products = () => {
 
         {isOpen && (
           <AddData
-            slug={'product'}
+            slug={'template'}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
+            reloadUsersList={reloadUsersList} // Add this empty function to satisfy TypeScript
           />
         )}
       </div>
@@ -160,4 +127,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default Templates;

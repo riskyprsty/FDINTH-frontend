@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import Home from './pages/Home';
 import Users from './pages/Users';
-import Products from './pages/Products';
+import Templates from './pages/Templates';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Menu from './components/menu/Menu';
@@ -22,7 +22,7 @@ import Logs from './pages/Logs';
 import ToasterProvider from './components/ToasterProvider';
 import EditProfile from './pages/EditProfile';
 import User from './pages/User';
-import Product from './pages/Product';
+import Template from './pages/Template';
 import Login from './pages/Login';
 
 function App() {
@@ -76,12 +76,12 @@ function App() {
           element: <User />,
         },
         {
-          path: '/products',
-          element: <Products />,
+          path: '/templates',
+          element: <Templates />,
         },
         {
-          path: '/products/:id',
-          element: <Product />,
+          path: '/templates/:id',
+          element: <Template />,
         },
         {
           path: '/orders',
