@@ -149,7 +149,7 @@ export const fetchTotalProfit = async () => {
 // GET ALL USERS
 export const fetchUsers = async () => {
   const response = await axios
-    .get('http://localhost:5000/api/users')
+    .get('/api/users')
     .then((res) => {
       console.log('axios get:', res.data);
       return res.data.data;
@@ -163,7 +163,7 @@ export const fetchUsers = async () => {
 };
 
 export const fetchCommentTemplate = async () => {
-  const response = await axios.get('http://localhost:5000/api/template/').then((res) => {
+  const response = await axios.get('/api/template/').then((res) => {
     console.log('axios get:', res.data);
     return res.data.data;
   }).catch((err) => {
@@ -175,7 +175,7 @@ export const fetchCommentTemplate = async () => {
 }
 
 // export const fetchPosts = async () => {
-//   const response = await axios.get('http://localhost:5000/api/posts').then((res) =>  {
+//   const response = await axios.get('/api/posts').then((res) =>  {
 //     console.log('axios get:', res.data);
 //     return response.data.data;
 //   }).catch((err) => {
@@ -232,7 +232,7 @@ export const fetchSingleProduct = async (id: string) => {
 };
 
 export const addSelectedUsers = async (userIds: string[], taskTypes: string[]) => {
-  const response = await axios.post(`http://localhost:5000/api/selecteduser/add`, {
+  const response = await axios.post(`/api/selecteduser/add`, {
     userIds,
     taskTypes
   });
@@ -258,7 +258,7 @@ export const fetchOrders = async () => {
 // GET ALL POSTS
 export const fetchPosts = async () => {
   const response = await axios
-    .get('http://localhost:5000/api/posts')
+    .get('/api/posts')
     .then((res) => {
       console.log('axios get:', res.data);
       return res.data.data;
